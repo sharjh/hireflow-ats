@@ -1,15 +1,18 @@
 require('dotenv').config();
 const express = require('express');
 const pool = require('./db');
+const requireAuth = require('./middleware/requireAuth');
 
 // Importing Routes
 const authRoutes = require('./routes/authRoutes');
-
+const companyRoutes = require('./routes/companyRoutes');
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+app.use(requireAuth);
 
 app.get('/', (req, res) => {
   res.sendStatus(200);
@@ -31,6 +34,7 @@ app.get('/', (req, res) => {
 
 //API Routes
 app.use('/auth', authRoutes);
+app.use('/companies', companyRoutes);
 
 
 app.listen(port, () => {

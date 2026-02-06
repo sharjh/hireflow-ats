@@ -5,6 +5,7 @@ const pool = require('./db');
 // Importing Routes
 const authRoutes = require('./routes/authRoutes');
 const companyRoutes = require('./routes/companyRoutes');
+const jobRoutes = require('./routes/jobRoutes');
 
 const app = express();
 const port = 3000;
@@ -32,6 +33,7 @@ app.get('/', (req, res) => {
 //API Routes
 app.use('/auth', authRoutes);
 app.use('/companies', companyRoutes);
+app.use('/jobs', jobRoutes);
 
 
 app.listen(port, () => {

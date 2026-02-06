@@ -3,6 +3,9 @@ const pool = require('../db');
 const generateToken = require('../utils/generateToken')
 
 const register = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({ error: 'Request body is required' });
+    }
     const { email, password, role } = req.body;
 
     //Check if user already exists

@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const pool = require('./db');
-const requireAuth = require('./middleware/requireAuth');
 
 // Importing Routes
 const authRoutes = require('./routes/authRoutes');
@@ -11,8 +10,6 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-
-app.use(requireAuth);
 
 app.get('/', (req, res) => {
   res.sendStatus(200);

@@ -6,6 +6,7 @@ const pool = require('./db');
 const authRoutes = require('./routes/authRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const jobRoutes = require('./routes/jobRoutes');
+const applicationRoutes = require('./routes/applicationRoutes');
 
 const app = express();
 const port = 3000;
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/companies', companyRoutes);
 app.use('/jobs', jobRoutes);
+app.use('/applications', applicationRoutes);
 
 
 app.listen(port, () => {

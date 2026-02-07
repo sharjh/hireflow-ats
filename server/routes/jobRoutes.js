@@ -1,16 +1,16 @@
 const express = require('express');
 const requireRole = require('../middleware/requireRole');
 const requireAuth = require('../middleware/requireAuth');
-const createJob = require('../controllers/jobController');
+const { createJob, getJobs, getJobById, updateJob } = require('../controllers/jobController');
 
 const router = express.Router();
 
 router.post("/", requireAuth, requireRole("COMPANY"), createJob);
 
-//router.get("/");
+router.get("/", getJobs);
 
-//router.get("/:id");
+router.get("/:id", getJobById);
 
-//router.patch("/:id", requireAuth, requireRole("COMPANY"));
+router.patch("/:id", requireAuth, requireRole("COMPANY"), updateJob);
 
 module.exports = router;

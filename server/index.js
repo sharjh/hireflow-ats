@@ -39,7 +39,7 @@ app.use('/applications', applicationRoutes);
 
 
 app.listen(port, () => {
-  console.log(`Example app listening on https://localhost:${port}`);
+  console.log(`App listening on https://localhost:${port}`);
 });
 
 

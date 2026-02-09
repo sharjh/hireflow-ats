@@ -1,6 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const pool = require('./db');
+const helmet = require('helmet');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 
 // Importing Routes
 const authRoutes = require('./routes/authRoutes');
@@ -11,10 +14,9 @@ const applicationRoutes = require('./routes/applicationRoutes');
 const app = express();
 const port = 3000;
 
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.sendStatus(200);
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100, // per IP
 });
 
 //DB Connection check
@@ -30,9 +32,19 @@ app.get('/', (req, res) => {
   }
 })();
 
+//Middlewares
+app.use(helmet());
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(express.json());
+app.disable('x-powered-by');
+
+app.get('/', (req, res) => {
+  res.sendStatus(200);
+});
+
 
 //API Routes
-app.use('/auth', authRoutes);
+app.use('/auth', authLimiter, authRoutes);
 app.use('/companies', companyRoutes);
 app.use('/jobs', jobRoutes);
 app.use('/applications', applicationRoutes);

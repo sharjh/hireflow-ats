@@ -31,7 +31,7 @@ export default function Home() {
 
             <Link
               to="/jobs"
-              className="inline-block px-6 py-3 bg-white text-teal-600 font-semibold rounded-md hover:bg-gray-100"
+              className="inline-block px-6 py-3 bg-white text-teal-600 font-semibold rounded-xl hover:bg-gray-100"
             >
               Search Jobs
             </Link>
@@ -78,7 +78,7 @@ export default function Home() {
         </h3>
         <Link
           to="/jobs"
-          className="px-6 py-3 bg-teal-600 text-white rounded-md hover:bg-teal-700"
+          className="px-6 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700"
         >
           Browse Jobs
         </Link>

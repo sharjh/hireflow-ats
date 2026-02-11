@@ -82,4 +82,18 @@ const logout = async (req, res) => {
     });
 };
 
-module.exports = { register, login, logout };
+const me = async (req, res) => {
+    try {
+        const { id, role } = req.user;
+        const result = await pool.query('SELECT id, email, role FROM users WHERE id = $1', [id]);
+        if (result.rows.length === 0) {
+            return res.status(401).json({ error: 'User not found' });
+        }
+        return res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+module.exports = { register, login, logout, me };

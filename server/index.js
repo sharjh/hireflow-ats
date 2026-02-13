@@ -4,6 +4,7 @@ const pool = require('./db');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
 
 // Importing Routes
 const authRoutes = require('./routes/authRoutes');
@@ -36,6 +37,7 @@ const authLimiter = rateLimit({
 app.use(helmet());
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.disable('x-powered-by');
 
 app.get('/', (req, res) => {

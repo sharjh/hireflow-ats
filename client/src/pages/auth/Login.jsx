@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate, useNavigationType } from "react-router";
-import api from "../../api/axios";
+import { useNavigate} from "react-router";
+import { useAuth } from '../../auth/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [form, setForm] = useState({
     email: '',
     password:''
@@ -23,11 +24,11 @@ const Login = () => {
     setError(null);
     setLoading(true);
     try {
-      await api.post('/auth/login', form);
-
+      await login(form);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      console.log(err.message);
+      setError('Invalid email or password');
     }
     finally {
       setLoading(false);

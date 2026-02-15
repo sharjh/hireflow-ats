@@ -14,6 +14,8 @@ import EditCompany from '../pages/company/EditCompany';
 import RequireAuth from '../auth/RequireAuth';
 import RequireRole from '../auth/RequireRole';
 
+import CompanyDashboard from '../pages/dashboard/CompanyDashboard';
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -52,6 +54,17 @@ const AppRoutes = () => {
             <RequireAuth>
               <RequireRole role="COMPANY">
                 <EditCompany />
+              </RequireRole>
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/dashboard/company"
+          element={
+            <RequireAuth>
+              <RequireRole role="COMPANY">
+                <CompanyDashboard />
               </RequireRole>
             </RequireAuth>
           }

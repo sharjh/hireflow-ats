@@ -47,21 +47,21 @@ export default function Home() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-xl shadow-md">
               <h3 className="text-xl font-semibold mb-2">Fast Applications</h3>
               <p>
                 Apply to jobs quickly with a single click — built for speed and ease.
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-xl shadow-md">
               <h3 className="text-xl font-semibold mb-2">Company Dashboards</h3>
               <p>
                 Companies can post jobs and manage applicants without the hassle.
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md">
+            <div className="bg-white p-6 rounded-xl shadow-md">
               <h3 className="text-xl font-semibold mb-2">Track Progress</h3>
               <p>
                 Candidates can monitor application status from one dashboard.

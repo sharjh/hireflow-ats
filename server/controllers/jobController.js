@@ -98,4 +98,26 @@ const updateJob = async (req, res) => {
     }
 };
 
-module.exports = { createJob, getJobs, getJobById, updateJob };
+const getMyJobs = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+
+    const result = await pool.query(`SELECT j.*
+                                    FROM jobs j
+                                    JOIN companies c ON j.company_id = c.id
+                                    WHERE c.owner_id = $1
+                                    ORDER BY j.created_at DESC`, [ownerId]);
+
+    return res.status(200).json({
+        data: result.rows
+    });
+
+  } catch (err) {
+        console.error(err.message);
+        return res.status(500).json({
+        error: 'Internal server error'
+    });
+  }
+};
+
+module.exports = { createJob, getJobs, getJobById, updateJob, getMyJobs };

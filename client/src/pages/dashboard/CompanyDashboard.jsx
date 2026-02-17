@@ -6,7 +6,28 @@ const CompanyDashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(null);
+
   const navigate = useNavigate();
+
+  const handleToggle = async (job) => {
+    try {
+      const newStatus = job.status === 'OPEN' ? 'CLOSED' : 'OPEN';
+
+      const res = await api.patch(`/jobs/${job.id}/status`, {
+        status: newStatus
+      });
+
+      setJobs((prevJobs) =>
+        prevJobs.map((j) =>
+          j.id === job.id ? res.data.data : j
+        )
+      );
+
+    } catch (err) {
+      console.error('Failed to toggle status');
+    }
+  };
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -36,7 +57,7 @@ const CompanyDashboard = () => {
 
         <button
           onClick={() => navigate('/jobs/create')}
-          className="px-5 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700"
+          className="px-5 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 cursor-pointer"
         >
           + Create Job
         </button>
@@ -64,41 +85,71 @@ const CompanyDashboard = () => {
                   {job.location || 'No location specified'}
                 </p>
 
-                <span
-                  className={`text-sm px-2 py-1 rounded ${
+                <button
+                  onClick={() => handleToggle(job)}
+                  className={`px-3 py-1 text-sm rounded cursor-pointer ${
                     job.status === 'OPEN'
                       ? 'bg-green-100 text-green-700'
                       : 'bg-gray-200 text-gray-700'
                   }`}
                 >
-                  {job.status}
-                </span>
+                  {job.status === 'OPEN' ? 'Close Job' : 'Reopen Job'}
+                </button>
               </div>
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => navigate(`/jobs/${job.id}`)}
-                  className="text-teal-600 hover:underline"
+                  onClick={() => setSelectedJob(job)}
+                  className="text-teal-600 hover:underline cursor-pointer"
                 >
                   View
                 </button>
 
                 <button
                   onClick={() => navigate(`/jobs/edit/${job.id}`)}
-                  className="text-gray-600 hover:underline"
+                  className="text-gray-600 hover:underline cursor-pointer"
                 >
                   Edit
                 </button>
 
                 <button
                   onClick={() => navigate(`/applications/job/${job.id}`)}
-                  className="text-gray-600 hover:underline"
+                  className="text-gray-600 hover:underline cursor-pointer"
                 >
                   Applicants
                 </button>
               </div>
             </div>
           ))}
+        </div>
+      )}
+      {selectedJob && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
+
+          <div className="bg-white w-full max-w-2xl p-6 rounded-lg shadow-lg relative">
+
+            <button
+              onClick={() => setSelectedJob(null)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-black cursor-pointer"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-2xl font-bold mb-4">
+              {selectedJob.title}
+            </h2>
+
+            <p className="mb-4 text-gray-700">
+              {selectedJob.description}
+            </p>
+
+            <div className="space-y-2 text-sm text-gray-600">
+              <p><strong>Location:</strong> {selectedJob.location || 'N/A'}</p>
+              <p><strong>Status:</strong> {selectedJob.status}</p>
+              <p><strong>Type:</strong> {selectedJob.employment_type}</p>
+            </div>
+
+          </div>
         </div>
       )}
     </div>

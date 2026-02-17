@@ -40,7 +40,7 @@ const CompanyProfile = () => {
 
           <button
             onClick={() => navigate('/companies/edit')}
-            className="px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700"
+            className="px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 cursor-pointer"
           >
             Edit Profile
           </button>

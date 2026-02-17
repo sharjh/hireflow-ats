@@ -15,12 +15,35 @@ import RequireAuth from '../auth/RequireAuth';
 import RequireRole from '../auth/RequireRole';
 
 import CompanyDashboard from '../pages/dashboard/CompanyDashboard';
+import CreateJob from '../pages/company/CreateJob';
+import EditJob from '../pages/company/EditJob';
 
 const AppRoutes = () => {
   return (
     <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/jobs' element={<Jobs />} />
+        <Route
+          path="/jobs/create"
+          element={
+            <RequireAuth>
+              <RequireRole role="COMPANY">
+                <CreateJob />
+              </RequireRole>
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/jobs/edit/:id"
+          element={
+            <RequireAuth>
+              <RequireRole role="COMPANY">
+                <EditJob />
+              </RequireRole>
+            </RequireAuth>
+          }
+        />
         <Route path='/jobs/:id' element={<JobDetails />} />
         
         <Route path='/login' element={<Login />} />

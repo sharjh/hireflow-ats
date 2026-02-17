@@ -6,14 +6,14 @@ const createJob = async (req, res) => {
 
     if (!title || !description || !employment_type || !location) {
         return res.status(400).json({
-            error: 'Title, description, location, and employment type are required',
+            error: "Title, description, location, and employment type are required",
         });
     }
 
     try {
         const companyResult = await pool.query("SELECT id FROM companies WHERE owner_id = $1", [ownerId]);
         if (companyResult.rows.length === 0) {
-            return res.status(404).json({ error: 'Company not found' });
+            return res.status(404).json({ error: "Company not found" });
         }
         const companyId = companyResult.rows[0].id;
 
@@ -26,7 +26,7 @@ const createJob = async (req, res) => {
         return res.status(201).json({ data: result.rows[0] });
     } catch (err) {
         console.error(err.message);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -54,7 +54,7 @@ const getJobById = async (req, res) => {
         const result = await pool.query("SELECT * FROM jobs WHERE id = $1", [jobId]);
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Job not found' });
+            return res.status(404).json({ error: "Job not found" });
         }
 
         return res.status(200).json({ data: result.rows[0] });
@@ -115,9 +115,44 @@ const getMyJobs = async (req, res) => {
   } catch (err) {
         console.error(err.message);
         return res.status(500).json({
-        error: 'Internal server error'
+        error: "Internal server error"
     });
   }
 };
 
-module.exports = { createJob, getJobs, getJobById, updateJob, getMyJobs };
+const updateJobStatus = async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const ownerId = req.user.id;
+
+    if (!['OPEN', 'CLOSED'].includes(status)) {
+        return res.status(400).json({
+        error: "Invalid status value"
+        });
+    }
+
+    try {
+        const result = await pool.query(`UPDATE jobs
+                                        SET status = $1
+                                        WHERE id = $2
+                                        AND company_id = (
+                                            SELECT id FROM companies WHERE owner_id = $3
+                                        )
+                                        RETURNING *`, [status, id, ownerId]);
+
+        if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Job not found or unauthorized" });
+        }
+
+        return res.status(200).json({
+        data: result.rows[0]
+        });
+
+    } catch (err) {
+        console.error(err.message);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+module.exports = { createJob, getJobs, getJobById, updateJob, getMyJobs, updateJobStatus };

@@ -17,6 +17,9 @@ import RequireRole from '../auth/RequireRole';
 import CompanyDashboard from '../pages/dashboard/CompanyDashboard';
 import CreateJob from '../pages/company/CreateJob';
 import EditJob from '../pages/company/EditJob';
+import JobApplications from '../pages/company/JobApplications';
+
+import CandidateDashboard from '../pages/dashboard/CandidateDashboard';
 
 const AppRoutes = () => {
   return (
@@ -88,6 +91,28 @@ const AppRoutes = () => {
             <RequireAuth>
               <RequireRole role="COMPANY">
                 <CompanyDashboard />
+              </RequireRole>
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/applications/job/:jobId"
+          element={
+            <RequireAuth>
+              <RequireRole role="COMPANY">
+                <JobApplications />
+              </RequireRole>
+            </RequireAuth>
+          }
+        />
+
+        <Route
+          path="/dashboard/candidate"
+          element={
+            <RequireAuth>
+              <RequireRole role="CANDIDATE">
+                <CandidateDashboard />
               </RequireRole>
             </RequireAuth>
           }

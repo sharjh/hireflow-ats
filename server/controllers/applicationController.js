@@ -37,6 +37,7 @@ const getMyApplications = async (req, res) => {
                                             a.id,
                                             a.status,
                                             a.created_at,
+                                            a.resume_url,
                                             j.id AS job_id,
                                             j.title,
                                             j.location,
@@ -102,7 +103,16 @@ const updateApplication = async (req, res) => {
         if (check.rows.length === 0) {
             return res.status(404).json({ error: 'Application not found or unauthorized', });
         }
-        const result = await pool.query(`UPDATE applications SET status = $1 WHERE id = $2 RETURNING id, status`, [status, applicationId]);
+        await pool.query(`UPDATE applications SET status = $1 WHERE id = $2 RETURNING id, status`, [status, applicationId]);
+
+        const result = await pool.query(`SELECT a.id,
+                                            a.resume_url,
+                                            a.status,
+                                            u.email AS candidate_email
+                                        FROM applications a
+                                        JOIN users u ON a.candidate_id = u.id
+                                        WHERE a.id = $1`, [applicationId]);
+
         return res.status(200).json({ data: result.rows[0], });
     } catch (err) {
         console.error(err.message);

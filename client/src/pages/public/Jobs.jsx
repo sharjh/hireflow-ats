@@ -92,7 +92,7 @@ const Jobs = () => {
             <button
               disabled={page === 1}
               onClick={() => fetchJobs(page - 1)}
-              className="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
               Previous
             </button>
@@ -102,9 +102,9 @@ const Jobs = () => {
             </span>
 
             <button
-              disabled={page === totalPages}
+              disabled={page >= totalPages}
               onClick={() => fetchJobs(page + 1)}
-              className="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
               Next
             </button>

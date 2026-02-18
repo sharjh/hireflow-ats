@@ -35,12 +35,33 @@ const getJobs = async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit) || 10, 50);
     const offset = (page - 1) * limit;
 
-    try {
-        const result = await pool.query(`SELECT * FROM jobs WHERE status=$1
-                                        ORDER BY created_at DESC
-                                        LIMIT $2 OFFSET $3`, ['OPEN', limit, offset]);
+    const { search, type } = req.query;
 
-        return res.status(200).json({ page, limit, count: result.rows.length, data: result.rows, });
+    try {
+        let baseQuery = `FROM jobs WHERE status = 'OPEN'`;
+        const values = [];
+        let index = 1;
+
+        if (search) {
+            baseQuery += ` AND title ILIKE $${index}`;
+            values.push(`%${search}%`);
+            index++;
+        }
+
+        if (type) {
+            baseQuery += ` AND employment_type = $${index}`;
+            values.push(type);
+            index++;
+        }
+
+        const countResult = await pool.query(`SELECT COUNT(*) ${baseQuery}`, values);
+        const total = parseInt(countResult.rows[0].count);
+
+        const dataResult = await pool.query(`SELECT * ${baseQuery}
+                                            ORDER BY created_at DESC
+                                            LIMIT $${index} OFFSET $${index + 1}`,[...values, limit, offset]);
+
+        return res.status(200).json({ data: dataResult.rows, page, limit, total });
     } catch (err) {
         console.error(err.message);
         return res.status(500).json({ error: 'Internal server error' });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import api from '../../api/axios';
 
 const Jobs = () => {
@@ -13,7 +13,9 @@ const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [search, setSearch] = useState('');
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get('search') || '');
+  const [location, setLocation] = useState(searchParams.get('location') || '');
   const [typeFilter, setTypeFilter] = useState('ALL');
 
   const totalPages = Math.ceil(total / limit);
@@ -38,6 +40,10 @@ const Jobs = () => {
         url += `&search=${encodeURIComponent(search)}`;
       }
 
+      if (location.trim()) {
+        url += `&location=${encodeURIComponent(location)}`;
+      }
+
       if (typeFilter !== 'ALL') {
         url += `&type=${typeFilter}`;
       }
@@ -57,7 +63,7 @@ const Jobs = () => {
 
   useEffect(() => {
     fetchJobs(1);
-  }, []);
+  }, [searchParams]);
 
   const handleSearch = (e) => {
     e.preventDefault();

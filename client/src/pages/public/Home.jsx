@@ -1,6 +1,22 @@
-import { Link } from 'react-router';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
 
 export default function Home() {
+  const [search, setSearch] = useState('');
+  const [location, setLocation] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    const params = new URLSearchParams();
+
+    if (search.trim()) params.append('search', search);
+    if (location.trim()) params.append('location', location);
+
+    navigate(`/jobs?${params.toString()}`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
 
@@ -16,26 +32,30 @@ export default function Home() {
           </p>
 
           {/* Search Inputs */}
-          <div className="flex flex-col md:flex-row justify-center gap-3">
+          <form className="flex flex-col md:flex-row justify-center gap-3" onSubmit={handleSearch}>
             <input
               type="text"
               placeholder="Job title or keyword"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full md:w-2/5 px-4 py-3 text-gray-400 border border-teal-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600"
             />
 
             <input
               type="text"
               placeholder="Location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
               className="w-full md:w-2/5 px-4 py-3 text-gray-400 border border-teal-950 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-600"
             />
 
-            <Link
-              to="/jobs"
-              className="inline-block px-6 py-3 bg-white text-teal-600 font-semibold rounded-xl hover:bg-gray-100"
+            <button
+              type="submit"
+              className="px-6 py-3 bg-white text-teal-600 font-semibold rounded-xl hover:bg-gray-100 cursor-pointer"
             >
               Search Jobs
-            </Link>
-          </div>
+            </button>
+          </form>
         </div>
       </section>
 

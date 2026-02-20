@@ -35,7 +35,7 @@ const getJobs = async (req, res) => {
     const limit = Math.min(parseInt(req.query.limit) || 10, 50);
     const offset = (page - 1) * limit;
 
-    const { search, type } = req.query;
+    const { search, location, type } = req.query;
 
     try {
         let baseQuery = `FROM jobs WHERE status = 'OPEN'`;
@@ -45,6 +45,12 @@ const getJobs = async (req, res) => {
         if (search) {
             baseQuery += ` AND title ILIKE $${index}`;
             values.push(`%${search}%`);
+            index++;
+        }
+
+        if (location) {
+            baseQuery += ` AND location ILIKE $${index}`;
+            values.push(`%${location}%`);
             index++;
         }
 

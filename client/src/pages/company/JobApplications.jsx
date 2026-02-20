@@ -77,7 +77,7 @@ const JobApplications = () => {
               className={`px-3 py-1 rounded-xl text-sm cursor-pointer ${
                 filter === status
                   ? 'bg-teal-600 text-white'
-                  : 'bg-gray-200 text-gray-700'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
               {status}
@@ -114,21 +114,21 @@ const JobApplications = () => {
               <div className="flex gap-3">
                 <button
                   onClick={() => updateStatus(app.id, 'REVIEWED')}
-                  className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded cursor-pointer"
+                  className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded cursor-pointer hover:bg-yellow-200 active:bg-yellow-300"
                 >
                   Review
                 </button>
 
                 <button
                   onClick={() => updateStatus(app.id, 'ACCEPTED')}
-                  className="px-3 py-1 bg-green-100 text-green-700 rounded cursor-pointer"
+                  className="px-3 py-1 bg-green-100 text-green-700 rounded cursor-pointer hover:bg-green-200 active:bg-green-300"
                 >
                   Accept
                 </button>
 
                 <button
                   onClick={() => updateStatus(app.id, 'REJECTED')}
-                  className="px-3 py-1 bg-red-100 text-red-700 rounded cursor-pointer"
+                  className="px-3 py-1 bg-red-100 text-red-700 rounded cursor-pointer hover:bg-red-200 active:bg-red-300"
                 >
                   Reject
                 </button>

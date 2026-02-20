@@ -13,6 +13,9 @@ const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('ALL');
+
   const totalPages = Math.ceil(total / limit);
 
   const formatEmploymentType = (type) => {
@@ -29,24 +32,42 @@ const Jobs = () => {
     try {
       setLoading(true);
 
-      const res = await api.get(
-        `/jobs?page=${pageNumber}&limit=${limit}`
-      );
+      let url = `/jobs?page=${pageNumber}&limit=${limit}`;
+
+      if (search.trim()) {
+        url += `&search=${encodeURIComponent(search)}`;
+      }
+
+      if (typeFilter !== 'ALL') {
+        url += `&type=${typeFilter}`;
+      }
+
+      const res = await api.get(url);
 
       setJobs(res.data.data || []);
       setTotal(res.data.total || 0);
       setPage(res.data.page || pageNumber);
 
     } catch (err) {
-      setError('Failed to load jobs');
+        setError('Failed to load jobs');
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchJobs(page);
+    fetchJobs(1);
   }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchJobs(1);
+  };
+
+  const handleFilterChange = (e) => {
+    setTypeFilter(e.target.value);
+    fetchJobs(1);
+  };
 
   if (loading) return <div className="p-6">Loading...</div>;
   if (error) return <div className="p-6 text-red-600">{error}</div>;
@@ -57,6 +78,38 @@ const Jobs = () => {
       <h1 className="text-3xl font-bold mb-8">
         Available Jobs
       </h1>
+
+      <div className="bg-white p-4 rounded-xl shadow mb-8 flex flex-col md:flex-row gap-4">
+
+        <form onSubmit={handleSearch} className="flex gap-2 flex-1">
+          <input
+            type="text"
+            placeholder="Search by title..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 border px-4 py-2 rounded-xl focus:ring-2 focus:ring-teal-500"
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700"
+          >
+            Search
+          </button>
+        </form>
+
+        <select
+          value={typeFilter}
+          onChange={handleFilterChange}
+          className="border px-4 py-2 rounded-xl focus:ring-2 focus:ring-teal-500"
+        >
+          <option value="ALL">All Types</option>
+          <option value="FULL_TIME">Full Time</option>
+          <option value="PART_TIME">Part Time</option>
+          <option value="INTERNSHIP">Internship</option>
+          <option value="CONTRACT">Contract</option>
+        </select>
+
+      </div>
 
       {jobs.length === 0 ? (
         <div className="bg-white p-6 rounded-xl shadow">
@@ -87,29 +140,31 @@ const Jobs = () => {
           </div>
 
           {/* Pagination Controls */}
-          <div className="flex justify-center items-center gap-4 mt-10">
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-10">
 
-            <button
-              disabled={page === 1}
-              onClick={() => fetchJobs(page - 1)}
-              className="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
+              <button
+                disabled={page <= 1}
+                onClick={() => fetchJobs(page - 1)}
+                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Previous
+              </button>
 
-            <span className="text-sm select-none">
-              Page {page} of {totalPages}
-            </span>
+              <span className="text-sm">
+                Page {page} of {totalPages}
+              </span>
 
-            <button
-              disabled={page >= totalPages}
-              onClick={() => fetchJobs(page + 1)}
-              className="px-4 py-2 bg-gray-200 rounded-xl disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => fetchJobs(page + 1)}
+                className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+              >
+                Next
+              </button>
 
-          </div>
+            </div>
+          )}
         </>
       )}
 

@@ -5,7 +5,7 @@ const validate = (schema) => (req, res, next) => {
     } catch (err) {
         return res.status(400).json({
             error: 'Validation failed',
-            details: err.errors.map(e => e.message),
+            details: err.issues.map(e => e.message),
         });
     }
 };

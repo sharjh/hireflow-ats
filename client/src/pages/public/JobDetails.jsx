@@ -40,12 +40,33 @@ const JobDetails = () => {
     fetchJob();
   }, [id]);
 
+  useEffect(() => {
+    const checkApplication = async () => {
+      if (!isAuthenticated || user?.role !== 'CANDIDATE') return;
+
+      try {
+        const res = await api.get('/applications/me');
+
+        const applied = res.data.data.some(
+          (app) => app.job_id === Number(id)
+        );
+
+        setHasApplied(applied);
+
+      } catch (err) {
+        console.error('Failed to check application');
+      }
+    };
+
+    checkApplication();
+  }, [id, isAuthenticated, user]);
+
   const handleApply = async (e) => {
     e.preventDefault();
 
     try {
       await api.post('/applications', {
-        jobId: id,
+        jobId: Number(id),
         resume_url: resumeUrl,
       });
 
@@ -88,36 +109,37 @@ const JobDetails = () => {
 
         {/* Apply Section */}
         {isAuthenticated && user?.role === 'CANDIDATE' && job.status === 'OPEN' && (
-          <div className="border-t border-t-gray-300 pt-6">
-
-            <h2 className="text-xl font-semibold mb-4">
-              Apply for this job
-            </h2>
+          <div className="border-t border-t-gray-400 pt-6">
 
             {hasApplied ? (
-              <div className="text-green-600">
-                {applyMessage}
+              <div className="text-green-600 font-semibold">
+                You have already applied to this job.
               </div>
             ) : (
-              <form onSubmit={handleApply} className="space-y-4">
+              <>
+                <h2 className="text-xl font-semibold mb-4">
+                  Apply for this job
+                </h2>
 
-                <input
-                  type="text"
-                  placeholder="Resume URL"
-                  value={resumeUrl}
-                  onChange={(e) => setResumeUrl(e.target.value)}
-                  required
-                  className="w-full border px-4 py-2 rounded-xl focus:ring-2 focus:ring-teal-500"
-                />
+                <form onSubmit={handleApply} className="space-y-4">
 
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 cursor-pointer"
-                >
-                  Apply
-                </button>
+                  <input
+                    type="text"
+                    placeholder="Resume URL"
+                    value={resumeUrl}
+                    onChange={(e) => setResumeUrl(e.target.value)}
+                    className="w-full border px-4 py-2 rounded-xl"
+                  />
 
-              </form>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700"
+                  >
+                    Apply
+                  </button>
+
+                </form>
+              </>
             )}
 
           </div>
